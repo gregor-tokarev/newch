@@ -1,46 +1,58 @@
 <template>
-  <div class="track">
-    <div class="track__img">
-      <img :src="imgUrl" :alt="title">
-    </div>
-    <div class="track__body">
-      <h1 class="track__title">{{ title }}</h1>
-      <p class="track__desc">{{ text }}</p>
-      <div class="track__footer">
-        <div class="track__board">/{{ board }}</div>
-        <div class="track__info">
-          <div class="track__created">{{ created.getTime() }}</div>
-          <div class="track__count">{{ commentsCount }}</div>
-          комментариев
+  <nuxt-link class="track__link" prefetch :to="localePath({ name: 'track-id', params: { id } })">
+    <div class="track">
+      <div class="track__img">
+        <img :src="imgUrl" :alt="title">
+      </div>
+      <div class="track__body">
+        <h1 class="track__title">{{ title }}</h1>
+        <p class="track__desc">{{ text }}</p>
+        <div class="track__footer">
+          <div class="track__board">/{{ board }}</div>
+          <div class="track__info">
+            <div class="track__created">{{ fromNow }}</div>
+            <div class="track__count">{{ commentsCount }} комментариев</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </nuxt-link>
 </template>
 
 <script>
+import moment from 'moment'
+import 'moment/locale/ru'
+
 export default {
   name: 'TrackCard',
   props: {
+    id: {
+      type: String,
+      require: true
+    },
     imgUrl: {
       type: String,
-      default: 'https://picsum.photos/295/210'
+      default: 'https://placewaifu.com/image/145/105'
     },
     title: {
       type: String,
-      default: 'Untitled'
+      default: 'Без названия'
     },
     desc: {
-      type: String,
-      default: 'Автор скуп на буквы'
+      type: Object,
+      default: () => ({
+        time: Date.now(),
+        version: '2.19.1',
+        blocks: []
+      })
     },
     board: {
       type: String,
-      default: 'dsf'
+      default: 'b'
     },
     created: {
-      type: Date,
-      default: new Date()
+      type: [String, Number],
+      default: moment.now()
     },
     commentsCount: {
       type: Number,
@@ -53,12 +65,18 @@ export default {
   },
   computed: {
     text () {
-      let text = this.desc
-      if (text.length > this.maxDescLength) {
-        text = text.slice(0, this.maxDescLength)
-        text += '...'
+      let text
+      if (this.desc !== null) {
+        for (const value of this.desc.blocks) {
+          if (value.type === 'paragraph') {
+            text = value.data.text
+          }
+        }
       }
       return text
+    },
+    fromNow () {
+      return moment(this.created).locale('ru').fromNow()
     }
   }
 }
@@ -67,11 +85,16 @@ export default {
 <style scoped lang="scss">
 .track {
   display: flex;
-  color: $text;
+  color: var(--text);
 
   &__img {
-    min-width: 295px;
-    object-fit: cover;
+    flex-shrink: 1;
+
+    img {
+      max-height: 205px;
+      object-position: top;
+      object-fit: cover;
+    }
   }
 
   &__body {
@@ -93,6 +116,10 @@ export default {
     word-break: break-all;
   }
 
+  &__link {
+    display: block;
+  }
+
   &__footer {
     display: flex;
     align-items: center;
@@ -101,7 +128,7 @@ export default {
   }
 
   &__board {
-    color: $accent;
+    color: var(--accent);
     cursor: pointer;
   }
 

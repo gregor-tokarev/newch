@@ -1,9 +1,13 @@
 <template>
   <div class="header">
     <div class="header__wrapper">
-      <Logo></Logo>
+      <nuxt-link :to="localePath({ name: 'index' })">
+        <Logo></Logo>
+      </nuxt-link>
       <SearchBar class="header__search"></SearchBar>
-      <Button>Создать тред</Button>
+      <nuxt-link prefetch :to="localePath({ name: 'form-create-track' })">
+        <Button>{{ $t('layout.createTread') }}</Button>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -26,7 +30,7 @@ export default {
 <style scoped lang="scss">
 .header {
   padding: 30px 0 10px;
-  background-color: $bg-dark;
+  background-color: var(--bg-dark);
 
   &__search {
     flex-basis: 50%;

@@ -1,11 +1,12 @@
 @import "fonts";
 @import "res/index";
+@import "form";
 
 html,
 body {
   min-height: 100%;
   font-family: Roboto, sans-serif;
-  background-color: $bg-dark;
+  background-color: var(--bg-dark);
 }
 
 * {
@@ -14,7 +15,31 @@ body {
   margin: 0;
 }
 
+ul {
+  list-style-type: none;
+}
+
 img {
   display: block;
   max-width: 100%;
+  max-height: 100%;
+}
+
+input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  color: #fff;
+  background-color: var(--accent);
+}
+
+.ce__settings {
+  background-color: #000 !important;
 }

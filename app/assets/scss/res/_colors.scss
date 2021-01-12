@@ -1,6 +1,11 @@
-$accent: #f60;
-$accent-hover: #a40;
-$bg: #3d5164;
-$bg-dark: #192834;
-$text: #f1f1f1;
-$label: #b1b1b1;
+:root {
+  --accent: #f60;
+  --accent-hover: #a40;
+  --bg: #3d5164;
+  --bg-dark: #192834;
+  --text: #f1f1f1;
+  --label: #b1b1b1;
+  // editor
+  --editor-toolbar: #000b1d;
+  --editor-selection: #{adjust-color(#f60, $alpha: -0.6, $lightness: +30%)};
+}
