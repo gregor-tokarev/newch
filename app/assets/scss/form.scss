@@ -1,0 +1,55 @@
+.form {
+  &__body {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    display: block;
+    width: 100%;
+    margin-bottom: 45px;
+    font-size: 48px;
+    line-height: 75px;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 2px;
+    word-spacing: 4px;
+
+    &:placeholder-shown {
+      color: var(--label);
+    }
+  }
+
+  &__captcha {
+    iframe {
+      transform: scale(0.77) !important;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+  }
+
+  &__select {
+    width: 300px;
+  }
+
+  &__label {
+    font-size: 24px;
+    line-height: 36px;
+    color: #f1f1f1;
+  }
+
+  &__board {
+    margin-right: 1.3%;
+  }
+
+  &__editor {
+    margin-top: 65px;
+  }
+
+  &__submit {
+    margin-top: 100px;
+  }
+}

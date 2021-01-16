@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function onlyImages() {
+        return request.resource.contentType.matches('image/.*') && request.resource.size < 5 * 1024 * 1024;
+    }
+
+    match /images/{userId}/{allImages=**} {
+        allow read, list;
+        allow write: if onlyImages() && request.auth.uid == userId;
+    }
+  }
+}

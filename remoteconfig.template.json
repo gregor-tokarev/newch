@@ -1,0 +1,9 @@
+{
+  "parameters": {
+    "logoText": {
+      "defaultValue": {
+        "value": "Logo"
+      }
+    }
+  }
+}
