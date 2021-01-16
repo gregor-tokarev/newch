@@ -101,10 +101,6 @@ export default {
 <style scoped lang="scss">
 #editor {
   max-width: 750px;
-  margin-right: auto;
-  margin-left: auto;
-  //border-radius: 33px;
-  //box-shadow: 0 0 13px 23px rgba(0, 0, 0, 0.25);
 
   ::v-deep {
     * {

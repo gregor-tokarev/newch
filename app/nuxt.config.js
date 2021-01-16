@@ -48,6 +48,7 @@ export default {
     ['cookie-universal-nuxt', { alias: 'cookies' }],
     '@nuxtjs/style-resources',
     '@nuxtjs/svg',
+    'portal-vue/nuxt',
     'nuxt-i18n',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',

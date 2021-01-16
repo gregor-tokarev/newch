@@ -20,6 +20,12 @@
     }
   }
 
+  &__captcha {
+    iframe {
+      transform: scale(0.77) !important;
+    }
+  }
+
   &__row {
     display: flex;
     align-items: center;

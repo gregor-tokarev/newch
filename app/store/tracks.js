@@ -5,17 +5,24 @@ const state = () => ({
   newTracks: [],
   track: {},
   firstLoad: true,
-  unsubscribeIndexPage: null
+  unsubscribeIndexPage: null,
+  unsubscribeTrack: null
 })
 
 const mutations = {
-  SET_UNSUBSCRIBER_INDEX (state, fn) {
+  SET_UNSUBSCRIBE_INDEX (state, fn) {
     state.unsubscribeIndexPage = fn
   },
   UNSUBSCRIBE_INDEX (state) {
     state.unsubscribeIndexPage && state.unsubscribeIndexPage()
     state.tracks = []
     state.newTracks = []
+  },
+  SET_UNSUBSCRIBE_TRACK (state, fn) {
+    state.unsubscribeTrack = fn
+  },
+  UNSUBSCRIBE_TRACK (state) {
+    state.unsubscribeTrack && state.unsubscribeTrack()
   },
 
   SET_TRACKS (state, tracks) {
@@ -29,15 +36,21 @@ const mutations = {
     track
   }) {
     const trackIndex = state.tracks.findIndex(track => track.id === trackId)
-    Vue.set(state.tracks, trackIndex, track)
-    const trackIndexNew = state.newTracks.findIndex(track => track.id === trackId)
-    Vue.set(state.newTracks, trackIndexNew, track)
+    if (trackIndex !== -1) {
+      Vue.set(state.tracks, trackIndex, track)
+    } else {
+      const trackIndexNew = state.newTracks.findIndex(track => track.id === trackId)
+      Vue.set(state.newTracks, trackIndexNew, track)
+    }
   },
   REMOVE_TRACK (state, trackId) {
     const trackIndex = state.tracks.findIndex(track => track.id === trackId)
-    state.tracks.splice(trackIndex, 1)
-    const trackIndexNew = state.newTracks.findIndex(track => track.id === trackId)
-    state.newTracks.splice(trackIndexNew, 1)
+    if (trackIndex !== -1) {
+      state.tracks.splice(trackIndex, 1)
+    } else {
+      const trackIndexNew = state.newTracks.findIndex(track => track.id === trackId)
+      state.newTracks.splice(trackIndexNew, 1)
+    }
   },
   SET_NEW_TRACKS (state, track) {
     const trackId = track.id
@@ -76,7 +89,10 @@ const actions = {
             if (change.type === 'modified') {
               commit('EDIT_TRACK', {
                 trackId: change.doc.id,
-                track: change.doc.data()
+                track: {
+                  id: change.doc.id,
+                  ...change.doc.data()
+                }
               })
             } else if (change.type === 'removed') {
               commit('REMOVE_TRACK', change.doc.id)
@@ -90,32 +106,41 @@ const actions = {
           })
         }
       })
-    commit('SET_UNSUBSCRIBER_INDEX', unsubscribe)
+    commit('SET_UNSUBSCRIBE_INDEX', unsubscribe)
     return new Promise((resolve) => {
       const promise = this.$fire.firestore
         .collection('tracks')
         .orderBy('created', 'desc')
         .get()
       resolve(promise)
-    }).then((tracks) => {
-      const addTracks = tracks.docs.map(track => ({
-        id: track.id,
-        ...track.data()
-      }))
-      commit('SET_TRACKS', addTracks)
-      commit('TOGGLE_LOAD_STATE', false)
     })
+      .then((tracks) => {
+        const addTracks = tracks.docs.map(track => ({
+          id: track.id,
+          ...track.data()
+        }))
+        commit('SET_TRACKS', addTracks)
+        commit('TOGGLE_LOAD_STATE', false)
+      })
   },
   unsubscribeTracks ({ commit }) {
     commit('UNSUBSCRIBE_INDEX')
   },
+  unsubscribeTrack ({ commit }) {
+    commit('UNSUBSCRIBE_TRACK')
+  },
   fetchAndSetTrack ({ commit }, id) {
     return new Promise((resolve) => {
-      this.$fire.firestore.collection('tracks').doc(id).onSnapshot((query) => {
-        const track = query.data()
+      const documentReference = this.$fire.firestore.collection('tracks').doc(id)
+      const unsubscribeTrack = documentReference.onSnapshot((query) => {
+        const track = {
+          ...query.data(),
+          id: query.id
+        }
         commit('SET_TRACK', track)
         resolve()
       })
+      commit('SET_UNSUBSCRIBE_TRACK', unsubscribeTrack)
     })
   },
   async deleteTrack ({
@@ -123,6 +148,10 @@ const actions = {
     getters
   }) {
     const id = getters.getTrack.id
+    const imagesUrls = getters.getTrack.body.blocks.filter(el => el.type === 'image' && el.data.file.url).map(el => el.data.file.url)
+    const imagesRefs = imagesUrls.map(url => this.$fire.storage.refFromURL(url))
+    const promises = imagesRefs.map(ref => ref.delete())
+    await Promise.all(promises)
     const trackRef = this.$fire.firestore.collection('tracks').doc(id)
     await trackRef.delete()
     commit('CLEAR_TRACK')

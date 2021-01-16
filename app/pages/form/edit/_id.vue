@@ -4,11 +4,11 @@
     <div class="form__body">
       <div class="form__row">
         <div class="form__label form__board">Доска:</div>
-        <SelectSearch class="form__select" v-model="board" :list="boardsList"></SelectSearch>
+        <SelectSearch v-model="board" class="form__select" :list="boardsList"></SelectSearch>
       </div>
-      <Editor @addImage="addImage" class="form__editor" v-model="body"></Editor>
+      <Editor v-model="body" class="form__editor"></Editor>
       <div class="form__row form__submit">
-        <Button large @click.native="save">Создать</Button>
+        <Button large @click.native="save">{{ $t('actions.edit') }}</Button>
         <recaptcha class="form__captcha" @success="onApprove"></recaptcha>
       </div>
     </div>
@@ -16,51 +16,52 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import Editor from '~/components/uicomponents/Editor'
 import SelectSearch from '~/components/uicomponents/SelectSearch'
 import form from '~/assets/mixins/form'
 import Button from '~/components/uicomponents/Button'
 
-const images = []
-
 export default {
-  name: 'createTrack',
-  mixins: [form],
-  head () {
-    return {
-      title: this.title || 'newch'
-    }
-  },
+  name: 'Track',
   components: {
     Button,
     SelectSearch,
     Editor
   },
-  beforeRouteLeave (to, from, next) {
-    const name = to.name.replace(/__.{3}/, '')
-    if (name !== 'track-id') {
-      images.forEach(ref => ref.delete())
-    }
-    next()
+  mixins: [form],
+  async fetch ({
+    store,
+    route
+  }) {
+    await Promise.all([
+      store.dispatch('boards/fetchAndSetBoards'),
+      store.dispatch('tracks/fetchAndSetTrack', route.params.id)
+    ])
+  },
+  created () {
+    this.body = this.getTrack.body
+    this.title = this.getTrack.title
+    this.board = this.getTrack.board
+  },
+  computed: {
+    ...mapGetters('tracks', ['getTrack'])
   },
   methods: {
-    addImage (ref) {
-      images.push(ref)
-    },
+    ...mapActions('tracks', ['editTrack']),
     async save () {
       try {
         this.token = await this.$recaptcha.getResponse()
-        const resp = await this.$fire.firestore.collection('tracks').add({
+        await this.$fire.firestore.collection('tracks').doc(this.$route.params.id).update({
           body: this.body,
           board: this.board,
           title: this.title,
-          creator: this.$user.uid,
-          created: Date.now()
+          lastUpdate: Date.now()
         })
 
         this.$router.push(this.localePath({
           name: 'track-id',
-          params: { id: resp.id }
+          params: { id: this.$route.params.id }
         }))
         await this.$recaptcha.reset()
       } catch (err) {

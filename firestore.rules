@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /tracks/{track} {
-      allow update, delete, write: if request.auth != null && resourse.data.creator == request.auth.uid;
+      allow update, delete: if request.auth != null && get(/databases/$(database)/documents/tracks/$(track)).data.creator == request.auth.uid;
       allow read, create: if request.auth != null;
     }
 

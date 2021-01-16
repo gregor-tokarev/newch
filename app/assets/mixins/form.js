@@ -4,7 +4,8 @@ export default {
   data: () => ({
     title: null,
     body: null,
-    board: null
+    board: null,
+    token: null
   }),
   watch: {
     body (newValue, oldValue) {
@@ -20,6 +21,11 @@ export default {
     ...mapGetters('boards', ['boards']),
     boardsList () {
       return this.boards.map(board => board.link)
+    }
+  },
+  methods: {
+    onApprove (token) {
+      this.token = token
     }
   },
   async fetch ({ store }) {
