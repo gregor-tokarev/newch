@@ -19,16 +19,19 @@
       </div>
       <Editor class="track__editor" read :data="getTrack.body || { blocks: [] }"/>
     </div>
+    <Button large>Ответить в тред</Button>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Editor from '~/components/uicomponents/Editor'
+import Button from '~/components/uicomponents/Button'
 
 export default {
   name: 'Id',
   components: {
+    Button,
     Editor
   },
   async fetch ({

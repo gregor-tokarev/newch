@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import SearchBar from '~/components/uicomponents/SearchBar'
+import SearchBar from '~/components/LayoutComponents/SearchBar'
 import Button from '~/components/uicomponents/Button'
 import Logo from '~/components/LayoutComponents/Logo'
 

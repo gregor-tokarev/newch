@@ -32,7 +32,8 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '~/plugins/clickOutside.js',
-    '~/plugins/auth.js'
+    '~/plugins/auth.js',
+    '~/plugins/search.js'
   ],
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
@@ -83,6 +84,19 @@ export default {
       analytics: true,
       performance: true
     }
+  },
+
+  firestore: {
+    emulatorHost: 'localhost',
+    emulatorPort: 8080
+  },
+  functions: {
+    emulatorHost: 'http://localhost',
+    emulatorPort: 5001
+   },
+  auth: {
+    emulatorHost: 'http://localhost',
+    emulatorPort: '9099'
   },
 
   i18n: {

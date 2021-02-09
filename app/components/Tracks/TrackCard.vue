@@ -1,8 +1,9 @@
 <template>
   <nuxt-link class="track__link" prefetch :to="localePath({ name: 'track-id', params: { id } })">
     <div class="track">
+      <div class="track__overlay" v-if="!show"></div>
       <div class="track__img">
-        <img :src="imgUrl" :alt="title">
+        <img :src="imgUrl" @load="show = true" :alt="title">
       </div>
       <div class="track__body">
         <h1 class="track__title">{{ title }}</h1>
@@ -25,6 +26,9 @@ import 'moment/locale/ru'
 
 export default {
   name: 'TrackCard',
+  data: () => ({
+    show: false
+  }),
   props: {
     id: {
       type: String,
@@ -84,8 +88,18 @@ export default {
 
 <style scoped lang="scss">
 .track {
+  position: relative;
   display: flex;
   color: var(--text);
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: var(--text);
+  }
 
   &__img {
     flex-shrink: 1;

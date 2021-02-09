@@ -32,13 +32,15 @@
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/firebase": "^7.3.0",
     "@nuxtjs/recaptcha": "^0.6.2",
+    "algoliasearch": "^4.8.5",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.6.5",
     "firebase": "^8.2.1",
     "moment": "^2.29.1",
     "nuxt": "^2.14.6",
     "nuxt-i18n": "^6.17.0",
-    "v-click-outside": "^3.1.2"
+    "v-click-outside": "^3.1.2",
+    "vue-instantsearch": "^3.4.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",

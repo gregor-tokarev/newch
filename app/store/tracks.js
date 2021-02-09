@@ -123,13 +123,28 @@ const actions = {
         commit('TOGGLE_LOAD_STATE', false)
       })
   },
+  async searchAndSetTracks ({ commit }, query) {
+    let tracks = await this.$fire.firestore
+      .collection('tracks')
+      .where('title', '')
+      .orderBy('created', 'desc')
+      .get()
+    tracks = tracks.docs.map(track => ({
+      id: track.id,
+      ...track.data()
+    }))
+    commit('SET_TRACKS', tracks)
+  },
   unsubscribeTracks ({ commit }) {
     commit('UNSUBSCRIBE_INDEX')
   },
   unsubscribeTrack ({ commit }) {
     commit('UNSUBSCRIBE_TRACK')
   },
-  fetchAndSetTrack ({ commit }, id) {
+  fetchAndSetTrack ({
+    commit,
+    getters
+  }, id) {
     return new Promise((resolve) => {
       const documentReference = this.$fire.firestore.collection('tracks').doc(id)
       const unsubscribeTrack = documentReference.onSnapshot((query) => {
@@ -140,6 +155,12 @@ const actions = {
         commit('SET_TRACK', track)
         resolve()
       })
+      documentReference.collection('comments').onSnapshot((query) => {
+        const track = getters.getTrack
+        track.comments = query.docs.map(doc => doc.data())
+        console.log(track)
+        commit('SET_TRACK', track)
+      })
       commit('SET_UNSUBSCRIBE_TRACK', unsubscribeTrack)
     })
   },
@@ -148,10 +169,12 @@ const actions = {
     getters
   }) {
     const id = getters.getTrack.id
-    const imagesUrls = getters.getTrack.body.blocks.filter(el => el.type === 'image' && el.data.file.url).map(el => el.data.file.url)
-    const imagesRefs = imagesUrls.map(url => this.$fire.storage.refFromURL(url))
-    const promises = imagesRefs.map(ref => ref.delete())
-    await Promise.all(promises)
+    if (getters.getTrack.body) {
+      const imagesUrls = getters.getTrack.body.blocks.filter(el => el.type === 'image' && el.data.file.url).map(el => el.data.file.url)
+      const imagesRefs = imagesUrls.map(url => this.$fire.storage.refFromURL(url))
+      const promises = imagesRefs.map(ref => ref.delete())
+      await Promise.all(promises)
+    }
     const trackRef = this.$fire.firestore.collection('tracks').doc(id)
     await trackRef.delete()
     commit('CLEAR_TRACK')
