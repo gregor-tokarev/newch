@@ -1,6 +1,6 @@
 <template>
-  <div @click="loadTracks" class="load">
-    <div class="load__icon" v-html="require('@/static/icons/loaderArrow.svg?raw')"></div>
+  <div class="load" @click="loadThreads">
+    <div class="load__icon" v-html="require('@/static/icons/loaderArrow.svg?raw')" />
     {{ $t('indexPage.loadTracks') }}
   </div>
 </template>
@@ -11,7 +11,7 @@ import { mapActions } from 'vuex'
 export default {
   name: 'LoadTracks',
   methods: {
-    ...mapActions('tracks', ['loadTracks'])
+    ...mapActions('threads', ['loadThreads'])
   }
 }
 </script>

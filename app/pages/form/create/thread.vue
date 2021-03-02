@@ -3,13 +3,17 @@
     <input v-model="title" placeholder="Заголовок" type="text" class="form__title">
     <div class="form__body">
       <div class="form__row">
-        <div class="form__label form__board">Доска:</div>
-        <SelectSearch class="form__select" v-model="board" :list="boardsList"></SelectSearch>
+        <div class="form__label form__board">
+          {{ $t('form.board') }}:
+        </div>
+        <SelectSearch v-model="board" class="form__select" :list="boardsList" />
       </div>
-      <Editor @addImage="addImage" class="form__editor" v-model="body"></Editor>
+      <Editor v-model="body" class="form__editor" @addImage="addImage" />
       <div class="form__row form__submit">
-        <Button large @click.native="save">Создать</Button>
-        <recaptcha class="form__captcha" @success="onApprove"></recaptcha>
+        <Button large @click.native="save">
+          {{ $t('actions.create') }}
+        </Button>
+        <recaptcha class="form__captcha" @success="onApprove" />
       </div>
     </div>
   </div>
@@ -24,25 +28,13 @@ import Button from '~/components/uicomponents/Button'
 const images = []
 
 export default {
-  name: 'createTrack',
-  mixins: [form],
-  head () {
-    return {
-      title: this.title || 'newch'
-    }
-  },
+  name: 'CreateTrack',
   components: {
     Button,
     SelectSearch,
     Editor
   },
-  beforeRouteLeave (to, from, next) {
-    const name = to.name.replace(/__.{3}/, '')
-    if (name !== 'track-id') {
-      images.forEach(ref => ref.delete())
-    }
-    next()
-  },
+  mixins: [form],
   methods: {
     addImage (ref) {
       images.push(ref)
@@ -50,7 +42,7 @@ export default {
     async save () {
       try {
         this.token = await this.$recaptcha.getResponse()
-        const resp = await this.$fire.firestore.collection('tracks').add({
+        const resp = await this.$fire.firestore.collection('threads').add({
           body: this.body,
           board: this.board,
           title: this.title,
@@ -59,7 +51,7 @@ export default {
         })
 
         this.$router.push(this.localePath({
-          name: 'track-id',
+          name: 'thread-id',
           params: { id: resp.id }
         }))
         await this.$recaptcha.reset()
@@ -67,6 +59,18 @@ export default {
         console.error(err)
       }
     }
+  },
+  head () {
+    return {
+      title: this.title || 'newch'
+    }
+  },
+  beforeRouteLeave (to, _, next) {
+    const name = to.name.replace(/__.{3}/, '')
+    if (name !== 'thread-id') {
+      images.forEach(ref => ref.delete())
+    }
+    next()
   }
 }
 </script>

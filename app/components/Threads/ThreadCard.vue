@@ -1,23 +1,37 @@
 <template>
-  <nuxt-link class="track__link" prefetch :to="localePath({ name: 'track-id', params: { id } })">
-    <div class="track">
-      <div class="track__overlay" v-if="!show"></div>
-      <div class="track__img">
-        <img :src="imgUrl" @load="show = true" :alt="title">
-      </div>
+  <div class="track">
+    <div v-if="!show" class="track__overlay" v-html="require('@/static/icons/loader.svg?raw')" />
+    <template>
+      <nuxt-link :to="localePath({ name: 'threads-id', params: { id } })">
+        <div class="track__img">
+          <img :src="imgUrl" :alt="title" @load="setLoaded">
+        </div>
+      </nuxt-link>
       <div class="track__body">
-        <h1 class="track__title">{{ title }}</h1>
-        <p class="track__desc">{{ text }}</p>
+        <h1 class="track__title">
+          <nuxt-link :to="localePath({ name: 'thread-id', params: { id } })">
+            {{ title }}
+          </nuxt-link>
+        </h1>
+        <p class="track__desc">
+          {{ text }}
+        </p>
         <div class="track__footer">
-          <div class="track__board">/{{ board }}</div>
+          <div class="track__board">
+            /{{ board }}
+          </div>
           <div class="track__info">
-            <div class="track__created">{{ fromNow }}</div>
-            <div class="track__count">{{ commentsCount }} комментариев</div>
+            <div class="track__created">
+              {{ fromNow }}
+            </div>
+            <div class="track__count">
+              {{ commentsCount }} {{ $t('indexPage.comments') }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </nuxt-link>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -70,7 +84,7 @@ export default {
   computed: {
     text () {
       let text
-      if (this.desc !== null) {
+      if (this.desc) {
         for (const value of this.desc.blocks) {
           if (value.type === 'paragraph') {
             text = value.data.text
@@ -80,7 +94,15 @@ export default {
       return text
     },
     fromNow () {
-      return moment(this.created).locale('ru').fromNow()
+      const locale = this.$i18n.locale
+      return moment(this.created).locale(locale).fromNow()
+    }
+  },
+  methods: {
+    setLoaded () {
+      setImmediate(() => {
+        this.show = true
+      })
     }
   }
 }
@@ -98,7 +120,10 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg);
   }
 
   &__img {
@@ -120,18 +145,27 @@ export default {
 
   &__title {
     margin-bottom: 30px;
-    font-size: 28px;
     font-weight: normal;
-    line-height: 33px;
     color: #f1f1f1;
+
+    @include title-light;
+
+    a {
+      color: var(--text);
+      text-decoration: underline;
+    }
   }
 
   &__desc {
     word-break: break-all;
+
+    @include button;
   }
 
   &__link {
     display: block;
+
+    @include button;
   }
 
   &__footer {
@@ -144,6 +178,8 @@ export default {
   &__board {
     color: var(--accent);
     cursor: pointer;
+
+    @include button;
   }
 
   &__info {
@@ -153,10 +189,14 @@ export default {
     font-weight: normal;
     line-height: 16px;
     color: #b1b1b1;
+
+    @include button;
   }
 
   &__created {
     margin-right: 25px;
+
+    @include button;
   }
 }
 </style>
