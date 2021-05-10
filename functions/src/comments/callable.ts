@@ -2,8 +2,8 @@ import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 export const editScore = functions.https.onCall(async (data, context) => {
-    const {type, commentId, tradId}: { type: 'increment' | 'decrement', commentId: string, tradId: string } = data
-    const commentRef = admin.firestore().collection('tracks').doc(tradId).collection('comments').doc(commentId)
+    const {type, commentId, threadId}: { type: 'increment' | 'decrement', commentId: string, threadId: string } = data
+    const commentRef = admin.firestore().collection('threads').doc(threadId).collection('comments').doc(commentId)
     const comment = await commentRef.get()
     // @ts-ignore
     const commentData = comment.data()!;

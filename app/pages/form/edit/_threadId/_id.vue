@@ -1,5 +1,5 @@
 <template>
-  <div class="form create-track">
+  <div class="form create-thread">
     <div class="form__body">
       <Editor v-model="body" padding-bottom="200" class="form__editor" />
       <div class="form__row form__submit">
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Editor from '~/components/uicomponents/Editor'
 import form from '~/assets/mixins/form'
 import Button from '~/components/uicomponents/Button'
 
 export default {
-  name: 'Track',
+  name: 'Thread',
   components: {
     Button,
     Editor
@@ -38,16 +38,15 @@ export default {
   }) {
     await store.dispatch('comments/fetchComment', {
       commentId: route.params.id,
-      tradId: route.params.tradId
+      threadId: route.params.threadId
     })
   },
   methods: {
-    ...mapActions('threads', ['editThread']),
     async save () {
       try {
         this.token = await this.$recaptcha.getResponse()
-        const tradRef = this.$fire.firestore.collection('tracks').doc(this.$route.params.tradId)
-        const commentRef = tradRef.collection('comments').doc(this.$route.params.id)
+        const threadRef = this.$fire.firestore.collection('threads').doc(this.$route.params.threadId)
+        const commentRef = threadRef.collection('comments').doc(this.$route.params.id)
         await commentRef.update({
           body: this.body,
           board: this.board,

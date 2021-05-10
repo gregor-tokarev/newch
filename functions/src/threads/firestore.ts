@@ -11,7 +11,7 @@ const ALGOLIA_APP_KEY: string = '2fc9926bcefec00b47cf5382b544f600'
 const algoliaClient: any = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_APP_KEY)
 const index = algoliaClient.initIndex('threads')
 
-export const addTrad = functions.firestore.document('threads/{threadId}')
+export const addThread = functions.firestore.document('threads/{threadId}')
     .onCreate(async snapshot => {
         const data: FirebaseFirestore.DocumentData = snapshot.data()
         const objectID = snapshot.id
@@ -24,7 +24,7 @@ export const addTrad = functions.firestore.document('threads/{threadId}')
         ]
     })
 
-export const updateTrad = functions.firestore.document('threads/{threadId}')
+export const updateThread = functions.firestore.document('threads/{threadId}')
     .onUpdate(change => {
         const newValue: Body = change.after.data().body
         const oldValue: Body = change.before.data().body
@@ -49,7 +49,7 @@ export const updateTrad = functions.firestore.document('threads/{threadId}')
         return Promise.all([updateAlgoliaIndex, ...promises])
     })
 
-export const deleteTrad = functions.firestore.document('threads/{threadId}')
+export const deleteThread = functions.firestore.document('threads/{threadId}')
     .onDelete(async snapshot => {
         const documentData = snapshot.data();
         let promises: Promise<any>[] = []
@@ -58,7 +58,7 @@ export const deleteTrad = functions.firestore.document('threads/{threadId}')
         if (documentData.body) {
             const blocks: Block[] = documentData.body.blocks
             // @ts-ignore
-            const images = blocks.filter(el => el.type === 'image' && el.data.file.url)
+            const images = blocks.filter(el => el.type === 'image' && el?.data?.file?.url)
             // @ts-ignore
             const imagesRefs = images.map(url => refFromUrl(url?.data?.file?.url))
             promises = imagesRefs.map(ref => ref.delete())

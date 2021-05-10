@@ -1,30 +1,30 @@
 <template>
-  <div class="track">
-    <div v-if="!show" class="track__overlay" v-html="require('@/static/icons/loader.svg?raw')" />
+  <div class="thread">
+    <div v-if="!show" class="thread__overlay" v-html="require('@/static/icons/loader.svg?raw')" />
     <template>
       <nuxt-link :to="localePath({ name: 'threads-id', params: { id } })">
-        <div class="track__img">
+        <div class="thread__img">
           <img :src="imgUrl" :alt="title" @load="setLoaded">
         </div>
       </nuxt-link>
-      <div class="track__body">
-        <h1 class="track__title">
+      <div class="thread__body">
+        <h1 class="thread__title">
           <nuxt-link :to="localePath({ name: 'thread-id', params: { id } })">
             {{ title }}
           </nuxt-link>
         </h1>
-        <p class="track__desc">
+        <p class="thread__desc">
           {{ text }}
         </p>
-        <div class="track__footer">
-          <div class="track__board">
+        <div class="thread__footer">
+          <div class="thread__board">
             /{{ board }}
           </div>
-          <div class="track__info">
-            <div class="track__created">
+          <div class="thread__info">
+            <div class="thread__created">
               {{ fromNow }}
             </div>
-            <div class="track__count">
+            <div class="thread__count">
               {{ commentsCount }} {{ $t('indexPage.comments') }}
             </div>
           </div>
@@ -39,7 +39,7 @@ import moment from 'moment'
 import 'moment/locale/ru'
 
 export default {
-  name: 'TrackCard',
+  name: 'ThreadCard',
   data: () => ({
     show: false
   }),
@@ -109,7 +109,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.track {
+.thread {
   position: relative;
   display: flex;
   color: var(--text);

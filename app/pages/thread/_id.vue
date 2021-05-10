@@ -1,28 +1,28 @@
 <template>
-  <div class="track">
+  <div class="thread">
     <h1 class="form__title">
       {{ getThread.title }}
     </h1>
-    <div class="track__body">
-      <div class="track__right-sidebar">
-        <div v-if="isOwner" class="track__sticky">
-          <div class="track__icon" @click="open = true" v-html="require('@/static/icons/trash.svg?raw')">
+    <div class="thread__body">
+      <div class="thread__right-sidebar">
+        <div v-if="isOwner" class="thread__sticky">
+          <div class="thread__icon" @click="open = true" v-html="require('@/static/icons/trash.svg?raw')">
             {{ $t('actions.delete') }}
           </div>
           <br>
           <nuxt-link
-            class="track__icon"
+            class="thread__icon"
             :to="localePath({ name: 'form-edit-id', params: { id: getThread.id } })"
             v-html="require('@/static/icons/edit.svg?raw')"
           />
         </div>
       </div>
-      <Editor class="track__editor" read :data="getThread.body || { blocks: [] }" />
+      <Editor class="thread__editor" read :data="getThread.body || { blocks: [] }" />
     </div>
     <Button
       large
-      class="track__reply"
-      @click.native="$router.push(localePath({name: 'form-create-trad-comment', params: {trad: $route.params.id}}))"
+      class="thread__reply"
+      @click.native="$router.push(localePath({name: 'form-create-thread-comment', params: {thread: $route.params.id}}))"
     >
       Ответить в тред
     </Button>
@@ -30,9 +30,9 @@
       v-for="(comment, index) in getComments"
       :key="index"
       :comment="comment"
-      class="track__comment"
+      class="thread__comment"
     />
-    <DeleteTrad v-if="open" @click:outside="open = false" @close="open = false" />
+    <DeleteThread v-if="open" @click:outside="open = false" @close="open = false" />
     <slide-x-right-transition>
       <nuxt-child />
     </slide-x-right-transition>
@@ -44,14 +44,14 @@ import { mapGetters, mapActions } from 'vuex'
 import { SlideXRightTransition } from 'vue2-transitions'
 import Editor from '~/components/uicomponents/Editor'
 import Button from '~/components/uicomponents/Button'
-import DeleteTrad from '~/components/Modals/DeleteTrad'
+import DeleteThread from '~/components/Modals/DeleteThread'
 import CommentCard from '~/components/CommentComponenets/CommentCard'
 
 export default {
   name: 'Id',
   components: {
     CommentCard,
-    DeleteTrad,
+    DeleteThread,
     Button,
     SlideXRightTransition,
     Editor
@@ -66,7 +66,7 @@ export default {
     open: false
   }),
   watch: {
-    getTrack (value) {
+    getThread (value) {
       this.redirectIfDeleted(value)
     }
   },
@@ -99,7 +99,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.track {
+.thread {
   position: relative;
 
   &__body {

@@ -1,5 +1,5 @@
 <template>
-  <div id="editor"/>
+  <div :id="id" class="editor" />
 </template>
 
 <script>
@@ -10,13 +10,13 @@ import Header from '@editorjs/header'
 import Checklist from '@editorjs/checklist'
 import Delimiter from '@editorjs/delimiter'
 import Image from '@editorjs/image'
+import { v4 } from 'uuid'
 
 export default {
   name: 'Editor',
-  data () {
-    return {
-      editor: null
-    }
+  model: {
+    event: 'change',
+    prop: 'data'
   },
   props: {
     read: {
@@ -25,21 +25,38 @@ export default {
     },
     data: {
       type: Object
+    },
+    id: {
+      type: String,
+      default: 'editor'
+    },
+    paddingBottom: {
+      type: [Number, String],
+      default: 300
     }
   },
-  model: {
-    event: 'change',
-    prop: 'data'
+  data () {
+    return {
+      editor: null
+    }
   },
   watch: {
-    data (value) {
-      this.read && this.editor.render(value)
+    async data (value) {
+      await this.editor.isReady
+      this.editor && this.read && this.editor.render(value)
     }
   },
-  async created () {
+  async mounted () {
+    await this.editor.isReady
+    const paddinger = document.querySelector(`#${this.id} .codex-editor__redactor`)
+    if (paddinger) {
+      paddinger.style.paddingBottom = this.paddingBottom + 'px'
+    }
+  },
+  created () {
     const vm = this
-    const editor = new EditorJS({
-      holderId: 'editor',
+    this.editor = new EditorJS({
+      holderId: vm.id,
 
       async onChange (api) {
         const body = await api.saver.save()
@@ -67,7 +84,7 @@ export default {
             uploader: {
               async uploadByFile (file) {
                 const bucket = vm.$fire.storage.ref()
-                const imgRef = bucket.child(`/images/${vm.$user.uid}/` + Date.now() + file.name)
+                const imgRef = bucket.child(`/editorImages/${vm.$user.uid}/` + v4() + '.' + file.name.split('.')[1])
                 const task = await imgRef.put(file, { contentType: file.type })
                 const url = await task.ref.getDownloadURL()
 
@@ -91,16 +108,13 @@ export default {
         }
       }
     })
-
-    await editor.isReady
-    this.editor = editor
   }
 }
 </script>
 
 <style scoped lang="scss">
-#editor {
-  max-width: 750px;
+.editor {
+  width: 100%;
 
   ::v-deep {
     * {
@@ -109,7 +123,7 @@ export default {
 
     .ce-toolbar__content,
     .ce-block__content {
-      max-width: 750px;
+      max-width: 100000px;
     }
 
     .ce-block {

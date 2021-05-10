@@ -1,5 +1,5 @@
 export const en = {
-  createTread: 'Создать тред',
+  createTread: 'Create trad',
   searchPlaceholder: 'Search'
 }
 

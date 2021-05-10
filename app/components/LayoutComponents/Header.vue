@@ -2,10 +2,10 @@
   <div class="header">
     <div class="header__wrapper">
       <nuxt-link :to="localePath({ name: 'index' })">
-        <Logo></Logo>
+        <Logo />
       </nuxt-link>
-      <SearchBar class="header__search"></SearchBar>
-      <nuxt-link prefetch :to="localePath({ name: 'form-create-track' })">
+      <SearchBar class="header__search" />
+      <nuxt-link prefetch :to="localePath({ name: 'form-create-thread' })">
         <Button>{{ $t('layout.createTread') }}</Button>
       </nuxt-link>
     </div>

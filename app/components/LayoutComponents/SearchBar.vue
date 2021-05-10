@@ -1,22 +1,26 @@
 <template>
-  <div class="search-bar">
-    <div v-html="require('@/static/icons/search.svg?raw')" class="search-bar__icon"></div>
+  <div class="search-bar" :class="{ 'search-bar--active': shown }">
+    <div class="search-bar__icon" v-html="require('@/static/icons/search.svg?raw')" />
     <input
       ref="input"
-      placeholder="Поиск"
-      type="text"
       v-model="query"
+      :placeholder="$t('layout.searchPlaceholder')"
+      type="text"
       class="search-bar__input"
+      @keyup.up.prevent="changeSelectedIndex('up')"
+      @keyup.down.prevent="changeSelectedIndex('down')"
+      @keyup.enter="results.length && goToRes(results[selectedIndex === -1 ? 0 : selectedIndex].objectID)"
       @blur="blur"
       @focus="open = true"
-    />
-    <div class="search-bar__results" v-if="results && open">
+    >
+    <div v-if="shown" class="search-bar__results">
       <SearchItem
-        @click.native.stop="goToRes(item.objectID)"
-        v-for="item in results"
+        v-for="(item, index) in results"
         :key="item.objectID"
-        :item="item._highlightResult"
-      ></SearchItem>
+        :class="{ 'search-bar__item--active': index === selectedIndex }"
+        :item="item"
+        @click.native.stop="goToRes(item.objectID)"
+      />
     </div>
   </div>
 </template>
@@ -25,7 +29,7 @@
 import algoliasearch from 'algoliasearch/lite'
 import SearchItem from '~/components/LayoutComponents/SearchItem'
 
-const algoliaClient = algoliasearch('R40L3PVYP5', '0798b7c27b0d2db05ff96e12a6724485').initIndex('tracks')
+const algoliaClient = algoliasearch('R40L3PVYP5', '0798b7c27b0d2db05ff96e12a6724485').initIndex('threads')
 
 const searchClient = {
   search (query) {
@@ -44,8 +48,19 @@ export default {
       query: '',
       searchClient,
       results: [],
-      open: false
+      open: false,
+      selectedIndex: -1
     }
+  },
+  computed: {
+    shown () {
+      return this.results &&
+        this.results.length
+      // this.open
+    }
+  },
+  watch: {
+    query: 'search'
   },
   mounted () {
     window.addEventListener('keyup', this.focus)
@@ -59,28 +74,33 @@ export default {
       this.results = results?.hits ?? []
       this.open = true
     },
+    changeSelectedIndex (direction) {
+      if (direction === 'up' && this.selectedIndex > 0) {
+        this.selectedIndex--
+      } else if (direction === 'down' && this.results.length - 1 > this.selectedIndex) {
+        this.selectedIndex++
+      }
+    },
     focus (event) {
       if (event.which === 191) {
-        console.log(this.$refs.input)
         this.$refs.input.focus()
       }
     },
     goToRes (id) {
+      if (!id) { return }
       this.$router.push(this.localePath({
-        name: 'track-id',
+        name: 'thread-id',
         params: { id }
       }))
       this.open = false
       this.query = ''
+      this.selectedIndex = -1
     },
     blur () {
       setTimeout(() => {
         this.open = false
       }, 400)
     }
-  },
-  watch: {
-    query: 'search'
   }
 }
 </script>
@@ -95,32 +115,45 @@ export default {
   background-color: var(--text);
   border-radius: 10px;
 
-  &__icon {
-    margin-right: 5px;
-
-    ::v-deep svg {
-      fill: var(--bg-dark);
-    }
-  }
-
   &__results {
     position: absolute;
     top: 100%;
     right: 0;
     bottom: 0;
     left: 0;
-    //display: none;
+  }
+
+  &--active {
+    border-radius: 10px 10px 0 0;
+
+    .search-bar__results {
+      border-top: 1px solid var(--bg-dark);
+    }
+  }
+
+  &__icon {
+    margin-right: 10px;
+
+    ::v-deep svg {
+      fill: var(--bg-dark);
+    }
+  }
+
+  &__item {
+    &--active {
+      background-color: var(--bg);
+    }
   }
 
   &__input {
     display: block;
     width: 100%;
-    font-size: 14px;
     color: var(--bg-dark);
     background-color: transparent;
     border: none;
     outline: none;
 
+    @include button;
     //&:focus + .search-bar__results {
     //  display: block;
     //}

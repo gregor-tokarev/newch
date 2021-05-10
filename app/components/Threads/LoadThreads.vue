@@ -1,7 +1,7 @@
 <template>
   <div class="load" @click="loadThreads">
     <div class="load__icon" v-html="require('@/static/icons/loaderArrow.svg?raw')" />
-    {{ $t('indexPage.loadTracks') }}
+    {{ $t('indexPage.loadThreads') }}
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'LoadTracks',
+  name: 'LoadThreads',
   methods: {
     ...mapActions('threads', ['loadThreads'])
   }

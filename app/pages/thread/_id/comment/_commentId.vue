@@ -4,7 +4,7 @@
     <div class="comments__main">
       <nuxt-link
         :to="localePath({
-          name: 'track-id',
+          name: 'thread-id',
           params: {id: $route.params.id}
         })"
         class="comments__close icon"
@@ -23,7 +23,7 @@
             <Button
               large
               class="comments__button"
-              @click.native="$router.push(localePath({name: 'form-create-trad-comment', params: {trad: $route.params.id}, query: {parent: $route.params.commentId}}))"
+              @click.native="$router.push(localePath({name: 'form-create-thread-comment', params: {thread: $route.params.id}, query: {parent: $route.params.commentId}}))"
             >
               {{ $t('actions.respondHere') }}
             </Button>
@@ -38,7 +38,7 @@
               v-if="getChildComments.length"
               large
               class="comments__button"
-              @click.native="$router.push(localePath({name: 'form-create-trad-comment', params: {trad: $route.params.id}, query: {parent: $route.params.commentId}}))"
+              @click.native="$router.push(localePath({name: 'form-create-thread-comment', params: {thread: $route.params.id}, query: {parent: $route.params.commentId}}))"
             >
               {{ $t('actions.respondHere') }}
             </Button>
@@ -67,18 +67,17 @@ export default {
     route
   }) {
     const pathPromise = store.dispatch('comments/fetchParentsPath', {
-      tradId: route.params.id,
+      threadId: route.params.id,
       commentId: route.params.commentId
     })
     const childPromise = store.dispatch('comments/fetchChildComments', {
-      tradId: route.params.id,
+      threadId: route.params.id,
       commentId: route.params.commentId
     })
     await Promise.all([pathPromise, childPromise])
   },
   computed: {
     ...mapGetters('comments', ['getChildComments', 'getPath']),
-    ...mapGetters('threads', ['getCommentById']),
     isFirstLevel () {
       return this.getPath.length === 0
     }

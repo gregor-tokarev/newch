@@ -59,7 +59,7 @@ export default {
         if (parentId) {
           this.$router.push(this.localePath({
             name: 'thread-id-comment-commentId',
-            params: { id: this.$route.params.threadId, commentId: parentId }
+            params: { id: this.$route.params.thread, commentId: parentId }
           }))
         } else {
           this.$router.push(this.localePath({

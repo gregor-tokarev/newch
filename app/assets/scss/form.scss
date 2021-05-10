@@ -1,19 +1,12 @@
 .form {
-  &__body {
-    max-width: 750px;
-    margin: 0 auto;
-  }
-
   &__title {
     display: block;
     width: 100%;
     margin-bottom: 45px;
-    font-size: 48px;
-    line-height: 75px;
     color: var(--text);
     text-align: center;
-    letter-spacing: 2px;
-    word-spacing: 4px;
+
+    @include title;
 
     &:placeholder-shown {
       color: var(--label);
@@ -36,9 +29,9 @@
   }
 
   &__label {
-    font-size: 24px;
-    line-height: 36px;
     color: #f1f1f1;
+
+    @include title-light;
   }
 
   &__board {
@@ -47,9 +40,5 @@
 
   &__editor {
     margin-top: 65px;
-  }
-
-  &__submit {
-    margin-top: 100px;
   }
 }

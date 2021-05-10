@@ -1,9 +1,10 @@
 <template>
   <div>
-    <Header></Header>
+    <Header class="header" />
     <div class="wrapper">
-      <nuxt/>
+      <nuxt />
     </div>
+    <portal-target class="modal" name="modal" />
   </div>
 </template>
 <script>
@@ -16,8 +17,16 @@ export default {
 
 <style scoped lang="scss">
 .wrapper {
-  margin-top: 100px;
+  margin-top: 180px;
 
   @extend %container;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
 }
 </style>

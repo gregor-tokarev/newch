@@ -1,29 +1,33 @@
 <template>
-  <div class="form create-track">
+  <div class="form create-thread">
     <input v-model="title" placeholder="Заголовок" type="text" class="form__title">
     <div class="form__body">
       <div class="form__row">
-        <div class="form__label form__board">Доска:</div>
-        <SelectSearch v-model="board" class="form__select" :list="boardsList"></SelectSearch>
+        <div class="form__label form__board">
+          {{ $t('form.board') }}:
+        </div>
+        <SelectSearch v-model="board" class="form__select" :list="boardsList" />
       </div>
-      <Editor v-model="body" class="form__editor"></Editor>
+      <Editor v-model="body" class="form__editor" />
       <div class="form__row form__submit">
-        <Button large @click.native="save">{{ $t('actions.edit') }}</Button>
-        <recaptcha class="form__captcha" @success="onApprove"></recaptcha>
+        <Button large @click.native="save">
+          {{ $t('actions.edit') }}
+        </Button>
+        <recaptcha class="form__captcha" @success="onApprove" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Editor from '~/components/uicomponents/Editor'
 import SelectSearch from '~/components/uicomponents/SelectSearch'
 import form from '~/assets/mixins/form'
 import Button from '~/components/uicomponents/Button'
 
 export default {
-  name: 'Track',
+  name: 'Thread',
   components: {
     Button,
     SelectSearch,
@@ -36,23 +40,22 @@ export default {
   }) {
     await Promise.all([
       store.dispatch('boards/fetchAndSetBoards'),
-      store.dispatch('tracks/fetchAndSetTrack', route.params.id)
+      store.dispatch('threads/fetchAndSetThread', route.params.id)
     ])
   },
   created () {
-    this.body = this.getTrack.body
-    this.title = this.getTrack.title
-    this.board = this.getTrack.board
+    this.body = this.getThread.body
+    this.title = this.getThread.title
+    this.board = this.getThread.board
   },
   computed: {
-    ...mapGetters('tracks', ['getTrack'])
+    ...mapGetters('threads', ['getThread'])
   },
   methods: {
-    ...mapActions('tracks', ['editTrack']),
     async save () {
       try {
         this.token = await this.$recaptcha.getResponse()
-        await this.$fire.firestore.collection('tracks').doc(this.$route.params.id).update({
+        await this.$fire.firestore.collection('threads').doc(this.$route.params.id).update({
           body: this.body,
           board: this.board,
           title: this.title,
@@ -60,7 +63,7 @@ export default {
         })
 
         this.$router.push(this.localePath({
-          name: 'track-id',
+          name: 'thread-id',
           params: { id: this.$route.params.id }
         }))
         await this.$recaptcha.reset()

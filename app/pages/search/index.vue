@@ -1,18 +1,18 @@
 <template>
   <div class="index">
-    <LoadTracks v-if="getNewTracks.length" class="index__load"></LoadTracks>
-    <TrackCard
-      class="index__item"
-      v-for="(track, index) in getTracks"
+    <LoadThreads v-if="getNewThreads.length" class="index__load" />
+    <ThreadCard
+      v-for="(thread, index) in getThreads"
+      :id="thread.id"
       :key="index"
-      :id="track.id"
-      :created="track.lastUpdate"
+      class="index__item"
+      :created="thread.lastUpdate"
       :max-desc-length="50000"
-      :desc="track.body"
-      :img-url="track.imgUrl"
-      :title="track.title"
-      :board="track.board"
-    ></TrackCard>
+      :desc="thread.body"
+      :img-url="thread.imgUrl"
+      :title="thread.title"
+      :board="thread.board"
+    />
   </div>
 </template>
 
@@ -20,15 +20,15 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'index',
+  name: 'Index',
   async fetch ({ store }) {
-    await store.dispatch('tracks/fetchAndSetTracks')
+    await store.dispatch('threads/fetchAndSetThreads')
   },
   beforeDestroy () {
-    this.unsubscribeTracks()
+    this.unsubscribeThread()
   },
   computed: {
-    ...mapGetters('tracks', ['getTracks', 'getNewTracks'])
+    ...mapGetters('threads', ['getThreads', 'getNewThreads'])
   }
 }
 </script>

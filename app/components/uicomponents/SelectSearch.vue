@@ -4,11 +4,11 @@
       <input
         ref="input"
         v-model="filterString"
+        class="select__selected-value"
         @keydown.down.up.prevent
         @keyup.enter="setValue(filterList[focusedItemIndex] || filterString)"
-        class="select__selected-value"
-      />
-      <div @click.stop="selectClick" class="select__icon" v-html="require('@/static/icons/arrow.svg?raw')"></div>
+      >
+      <div class="select__icon" @click.stop="selectClick" v-html="require('@/static/icons/arrow.svg?raw')" />
     </div>
     <ul v-if="open" class="select__choose">
       <template v-if="filterList.length">
@@ -59,6 +59,12 @@ export default {
       open: this.openDefault
     }
   },
+  computed: {
+    filterList () {
+      const list = !this.filterString ? this.list : this.list.filter(item => item.includes(this.filterString))
+      return list
+    }
+  },
   watch: {
     filterString (value) {
       if (value !== '' && this.focusedItemIndex === -1) {
@@ -100,12 +106,6 @@ export default {
       // eslint-disable-next-line no-return-assign
       setImmediate(() => this.open = false)
     }
-  },
-  computed: {
-    filterList () {
-      const list = !this.filterString ? this.list : this.list.filter(item => item.includes(this.filterString))
-      return list
-    }
   }
 }
 </script>
@@ -127,6 +127,10 @@ export default {
     }
   }
 
+  &__selected-value {
+    @include button;
+  }
+
   &__404 {
     padding: 5px 10px;
   }
@@ -134,6 +138,8 @@ export default {
   &__item {
     padding: 5px 10px;
     cursor: pointer;
+
+    @include button;
 
     &--focused {
       background-color: #c9c9c9;

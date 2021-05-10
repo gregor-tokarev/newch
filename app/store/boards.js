@@ -11,7 +11,10 @@ const mutations = {
 const actions = {
   async fetchAndSetBoards ({ commit }) {
     let boards = await this.$fire.firestore.collection('boards').get()
-    boards = boards.docs.map(board => board.data())
+    boards = boards.docs.map(board => ({
+      ...board.data(),
+      id: board.id
+    }))
     commit('SET_BOARDS', boards)
   }
 }

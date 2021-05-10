@@ -29,6 +29,11 @@ export default {
     '~/assets/scss/main.scss'
   ],
 
+  loading: {
+    color: '#f60',
+    height: '3px'
+  },
+
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '~/plugins/clickOutside.js',
@@ -41,7 +46,8 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/stylelint
-    '@nuxtjs/stylelint-module'
+    '@nuxtjs/stylelint-module',
+    '@nuxt/typescript-build'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -80,9 +86,18 @@ export default {
       firestore: true,
       auth: true,
       remoteConfig: true,
+      functions: true,
       storage: true,
       analytics: true,
       performance: true
+    }
+  },
+
+  typescript: {
+    typeCheck: {
+      eslint: {
+        files: './**/*.{ts,js,vue}'
+      }
     }
   },
 
@@ -93,7 +108,7 @@ export default {
   functions: {
     emulatorHost: 'http://localhost',
     emulatorPort: 5001
-   },
+  },
   auth: {
     emulatorHost: 'http://localhost',
     emulatorPort: '9099'

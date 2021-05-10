@@ -3,8 +3,10 @@
   --accent-hover: #a40;
   --bg: #3d5164;
   --bg-dark: #192834;
+  --modal-overlay: #{adjust-color(#3d5164, $alpha: -0.8)};
   --text: #f1f1f1;
   --label: #b1b1b1;
+  --disabled: #6c6c6c;
   // editor
   --editor-toolbar: #000b1d;
   --editor-selection: #{adjust-color(#f60, $alpha: -0.6, $lightness: +30%)};

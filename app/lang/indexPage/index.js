@@ -1,7 +1,9 @@
 export const en = {
-  loadTracks: 'Load new Tracks'
+  loadThreads: 'Load new Threads',
+  comments: 'comments'
 }
 
 export const ru = {
-  loadTracks: 'Загрузить новые треки'
+  loadThreads: 'Загрузить новые треки',
+  comments: 'комментариев'
 }

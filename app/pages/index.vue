@@ -1,44 +1,44 @@
 <template>
   <div class="index">
-    <LoadTracks v-if="getNewTracks.length" class="index__load"></LoadTracks>
-    <TrackCard
-      class="index__item"
-      v-for="(track, index) in getTracks"
+    <LoadThreads v-if="getNewThreads.length" class="index__load" />
+    <ThreadCard
+      v-for="(thread, index) in getThreads"
+      :id="thread.id"
       :key="index"
-      :id="track.id"
-      :created="track.lastUpdate"
+      class="index__item"
+      :created="thread.lastUpdate"
       :max-desc-length="50000"
-      :desc="track.body"
-      :img-url="track.imgUrl"
-      :title="track.title"
-      :board="track.board"
-    ></TrackCard>
+      :desc="thread.body"
+      :img-url="thread.imgUrl"
+      :title="thread.title"
+      :board="thread.board"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import TrackCard from '~/components/Tracks/TrackCard'
-import LoadTracks from '~/components/Tracks/LoadTracks'
+import ThreadCard from '~/components/Threads/ThreadCard'
+import LoadThreads from '~/components/Threads/LoadThreads'
 
 export default {
-  name: 'index',
+  name: 'Index',
   components: {
-    LoadTracks,
-    TrackCard
+    LoadThreads,
+    ThreadCard
   },
   async fetch ({ store }) {
-    store.commit('tracks/TOGGLE_LOAD_STATE', true)
-    await store.dispatch('tracks/fetchAndSetTracks')
+    store.commit('threads/TOGGLE_LOAD_STATE', true)
+    await store.dispatch('threads/fetchAndSetThreads')
   },
   beforeDestroy () {
-    this.unsubscribeTracks()
+    this.unsubscribeThreads()
   },
   computed: {
-    ...mapGetters('tracks', ['getTracks', 'getNewTracks'])
+    ...mapGetters('threads', ['getThreads', 'getNewThreads'])
   },
   methods: {
-    ...mapActions('tracks', ['unsubscribeTracks'])
+    ...mapActions('threads', ['unsubscribeThreads'])
   }
 }
 </script>

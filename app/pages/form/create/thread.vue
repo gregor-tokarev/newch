@@ -1,5 +1,5 @@
 <template>
-  <div class="form create-track">
+  <div class="form create-thread">
     <input v-model="title" placeholder="Заголовок" type="text" class="form__title">
     <div class="form__body">
       <div class="form__row">
@@ -28,7 +28,7 @@ import Button from '~/components/uicomponents/Button'
 const images = []
 
 export default {
-  name: 'CreateTrack',
+  name: 'CreateThread',
   components: {
     Button,
     SelectSearch,

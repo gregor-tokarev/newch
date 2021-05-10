@@ -1,9 +1,21 @@
 export const ru = {
   delete: 'Удалить',
-  edit: 'Редактировать Трек'
+  editTrad: 'Редактировать Тред',
+  editComment: 'Редактировать коммент',
+  areYouSure: 'А вы блять уверенны??',
+  no: 'Нет',
+  ofCourse: 'Конечно',
+  create: 'Создать',
+  respondHere: 'Ответить сюда'
 }
 
 export const en = {
   delete: 'Delete',
-  edit: 'Edit track'
+  editTrad: 'Edit trad',
+  editComment: 'Edit comment',
+  areYouSure: 'Are you sure??',
+  no: 'No',
+  ofCourse: 'of course',
+  create: 'Create',
+  respondHere: 'Respond here'
 }
