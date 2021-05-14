@@ -75,8 +75,8 @@ async function updateBoardStats(boardLink: string, type: 'increment' | 'decremen
     const boards = await admin.firestore().collection('boards').where('link', '==', boardLink).get()
     const board = boards.docs[0]
     const data = board.data()
-    const tradsCount = type === 'increment' ? ++data.tradsCount : --data.tradsCount
+    const threadsCount = type === 'increment' ? ++data.threadsCount : --data.threadsCount
     return board.ref.update({
-        tradsCount,
+        threadsCount,
     })
 }

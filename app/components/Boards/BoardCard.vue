@@ -1,46 +1,49 @@
 <template>
-  <nuxt-link tag="div" :to="localePath({name: 'board', params: {id}})" class="board">
+  <div
+    :class="{
+      'board--light': color === 'light'
+    }"
+    class="board"
+  >
     <div class="board__name">
-      {{ name }}
+      {{ board.name }}
     </div>
     <div class="board__desc">
-      {{ desc }}
+      {{ board.desc }}
     </div>
     <div class="board__count">
-      {{ threadsCount }}
+      {{ board.threadsCount }}
     </div>
-  </nuxt-link>
+  </div>
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'BoardCard',
   props: {
-    name: {
-      type: String,
+    board: {
+      type: Object,
       required: true
     },
-    desc: {
+    color: {
       type: String,
-      required: true
-    },
-    threadsCount: {
-      type: Number,
-      required: true
-    },
-    id: {
-      type: String,
-      required: true
+      default: 'dark'
     }
   }
-}
+})
 </script>
 
 <style scoped lang="scss">
 .board {
   display: flex;
   align-items: center;
-  padding: 15px 30px;
+  padding: 15px 2.5%;
+
+  &--light {
+    background-color: var(--bg);
+  }
 
   &__name,
   &__desc,
@@ -55,11 +58,11 @@ export default {
   }
 
   &__desc {
-    flex-basis: 71%;
+    flex-basis: 63%;
   }
 
   &__count {
-    flex-basis: 14%;
+    flex-basis: 22%;
     color: var(--label);
   }
 }

@@ -27,9 +27,10 @@ export default {
     LoadThreads,
     ThreadCard
   },
-  async fetch ({ store }) {
+  async fetch ({ store, route }) {
+    const boardLink = route.query.b
     store.commit('threads/TOGGLE_LOAD_STATE', true)
-    await store.dispatch('threads/fetchAndSetThreads')
+    await store.dispatch('threads/fetchAndSetThreads', { boardLink })
   },
   beforeDestroy () {
     this.unsubscribeThreads()

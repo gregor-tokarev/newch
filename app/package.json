@@ -38,6 +38,7 @@
     "uuid": "^8.3.2",
     "v-click-outside": "^3.1.2",
     "vue-instantsearch": "^3.4.3",
+    "vue-property-decorator": "^9.1.2",
     "vue2-transitions": "^0.3.0"
   },
   "devDependencies": {

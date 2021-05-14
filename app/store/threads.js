@@ -83,11 +83,17 @@ const actions = {
   fetchAndSetThreads ({
     commit,
     state
-  }) {
-    const unsubscribe = this.$fire.firestore
-      .collection('threads')
-      .orderBy('created', 'desc')
-      .limit(2)
+  }, { boardLink }) {
+    const query = boardLink
+      ? this.$fire.firestore
+          .collection('threads')
+          .where('board', '==', boardLink)
+          .orderBy('created', 'desc')
+      : this.$fire.firestore
+        .collection('threads')
+        .orderBy('created', 'desc')
+
+    const unsubscribe = query
       .onSnapshot((snapshot) => {
         if (!state.firstLoad) {
           snapshot.docChanges().forEach((change) => {
@@ -113,9 +119,7 @@ const actions = {
       })
     commit('SET_UNSUBSCRIBE_INDEX', unsubscribe)
     return new Promise((resolve) => {
-      const promise = this.$fire.firestore
-        .collection('threads')
-        .orderBy('created', 'desc')
+      const promise = query
         .get()
       resolve(promise)
     })
