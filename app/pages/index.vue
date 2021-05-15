@@ -13,6 +13,12 @@
       :title="thread.title"
       :board="thread.board"
     />
+    <BoardCardSmall
+      v-for="(board, index) in boards"
+      :key="board.id"
+      :color="index % 2 !== 0 ? 'dark' : 'light'"
+      :board="board"
+    />
   </div>
 </template>
 
@@ -20,23 +26,32 @@
 import { mapGetters, mapActions } from 'vuex'
 import ThreadCard from '~/components/Threads/ThreadCard'
 import LoadThreads from '~/components/Threads/LoadThreads'
+import BoardCardSmall from '~/components/Boards/BoardCardSmall'
 
 export default {
   name: 'Index',
   components: {
+    BoardCardSmall,
     LoadThreads,
     ThreadCard
   },
-  async fetch ({ store, route }) {
+  async fetch ({
+    store,
+    route
+  }) {
     const boardLink = route.query.b
     store.commit('threads/TOGGLE_LOAD_STATE', true)
-    await store.dispatch('threads/fetchAndSetThreads', { boardLink })
+    await Promise.all([
+      store.dispatch('boards/fetchBoardsForIndex'),
+      store.dispatch('threads/fetchAndSetThreads', { boardLink })
+    ])
   },
   beforeDestroy () {
     this.unsubscribeThreads()
   },
   computed: {
-    ...mapGetters('threads', ['getThreads', 'getNewThreads'])
+    ...mapGetters('threads', ['getThreads', 'getNewThreads']),
+    ...mapGetters('boards', ['boards'])
   },
   methods: {
     ...mapActions('threads', ['unsubscribeThreads'])
