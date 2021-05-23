@@ -6,9 +6,9 @@
     }"
   >
     <div class="card__header">
-      <div class="card__link">
+      <nuxt-link tag="div" :to="localePath({name: 'index', query: {b: board.link}})" class="card__link">
         /{{ board.link }}
-      </div>
+      </nuxt-link>
       <div class="card__name">
         {{ board.name }}
       </div>

@@ -1,24 +1,35 @@
 <template>
-  <div class="index">
-    <LoadThreads v-if="getNewThreads.length" class="index__load" />
-    <ThreadCard
-      v-for="(thread, index) in getThreads"
-      :id="thread.id"
-      :key="index"
-      class="index__item"
-      :created="thread.lastUpdate"
-      :max-desc-length="50000"
-      :desc="thread.body"
-      :img-url="thread.imgUrl"
-      :title="thread.title"
-      :board="thread.board"
-    />
-    <BoardCardSmall
-      v-for="(board, index) in boards"
-      :key="board.id"
-      :color="index % 2 !== 0 ? 'dark' : 'light'"
-      :board="board"
-    />
+  <div class="page">
+    <div class="page__content">
+      <main class="page__main">
+        <LoadThreads v-if="getNewThreads.length" class="page__load" />
+        <ThreadCard
+          v-for="(thread, index) in getThreads"
+          :id="thread.id"
+          :key="index"
+          class="page__item"
+          :created="thread.lastUpdate"
+          :max-desc-length="50000"
+          :desc="thread.body"
+          :img-url="thread.imgUrl"
+          :comments-count="thread.commentsCount"
+          :title="thread.title"
+          :board="thread.board"
+        />
+      </main>
+      <aside class="page__aside">
+        <nuxt-link tag="div" :to="localePath({name: 'boards'})" class="page__boards">
+          Все доски
+        </nuxt-link>
+
+        <BoardCardSmall
+          v-for="(board, index) in boards"
+          :key="board.id"
+          :color="index % 2 !== 0 ? 'dark' : 'light'"
+          :board="board"
+        />
+      </aside>
+    </div>
   </div>
 </template>
 
@@ -35,6 +46,7 @@ export default {
     LoadThreads,
     ThreadCard
   },
+  watchQuery: ['b', 'qeruy'],
   async fetch ({
     store,
     route
@@ -60,13 +72,36 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index {
+.page {
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__main {
+    flex-basis: 65%;
+  }
+
   &__load {
     margin-bottom: 140px;
   }
 
   &__item {
     margin-bottom: 60px;
+  }
+
+  &__aside {
+    flex-basis: 27%;
+  }
+
+  &__boards {
+    margin-bottom: 45px;
+    font-size: 24px;
+    line-height: 28px;
+    color: var(--accent);
+    text-align: center;
+    cursor: pointer;
   }
 }
 </style>

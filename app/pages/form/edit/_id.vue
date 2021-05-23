@@ -11,7 +11,7 @@
       <Editor v-model="body" class="form__editor" />
       <div class="form__row form__submit">
         <Button large @click.native="save">
-          {{ $t('actions.edit') }}
+          Редактировать
         </Button>
         <recaptcha class="form__captcha" @success="onApprove" />
       </div>

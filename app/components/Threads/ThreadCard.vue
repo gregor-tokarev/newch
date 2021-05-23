@@ -1,45 +1,48 @@
 <template>
   <div class="thread">
-    <div v-if="!show" class="thread__overlay" v-html="require('@/static/icons/loader.svg?raw')" />
-    <template>
-      <nuxt-link :to="localePath({ name: 'threads-id', params: { id } })">
-        <div class="thread__img">
-          <img :src="imgUrl" :alt="title" @load="setLoaded">
+    <!--    <div v-if="!show" class="thread__overlay" v-html="require('@/static/icons/loader.svg?raw')" />-->
+    <div class="thread__header">
+      <h1 class="thread__title">
+        <nuxt-link :to="localePath({ name: 'thread-id', params: { id } })">
+          {{ title }}
+        </nuxt-link>
+      </h1>
+      <div class="thread__stats">
+        <div class="thread__board">
+          /{{ board }}
         </div>
-      </nuxt-link>
-      <div class="thread__body">
-        <h1 class="thread__title">
-          <nuxt-link :to="localePath({ name: 'thread-id', params: { id } })">
-            {{ title }}
-          </nuxt-link>
-        </h1>
-        <p class="thread__desc">
-          {{ text }}
-        </p>
-        <div class="thread__footer">
-          <div class="thread__board">
-            /{{ board }}
+        <div class="thread__info">
+          <div class="thread__created">
+            {{ fromNow }}
           </div>
-          <div class="thread__info">
-            <div class="thread__created">
-              {{ fromNow }}
-            </div>
-            <div class="thread__count">
-              {{ commentsCount }} {{ $t('indexPage.comments') }}
-            </div>
+          <div class="thread__count">
+            {{ commentsCount }} {{ $t('indexPage.comments') }}{{ ending2(commentsCount, $i18n.locale) }}
           </div>
         </div>
       </div>
-    </template>
+    </div>
+    <div class="thread__body">
+      <div class="thread__desc" :class="{'thread__desc--open': show}">
+        <Editor read :data="desc" :padding-bottom="0" />
+        <div v-if="!show" class="thread__blur" />
+      </div>
+    </div>
+
+    <div class="thread__open" @click="show = !show">
+      {{ !show ? 'Показать все' : 'Свернуть' }}
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import 'moment/locale/ru'
+import ending2 from '~/assets/js/ending2'
+import Editor from '~/components/uicomponents/Editor'
 
 export default {
   name: 'ThreadCard',
+  components: { Editor },
   data: () => ({
     show: false
   }),
@@ -99,6 +102,7 @@ export default {
     }
   },
   methods: {
+    ending2,
     setLoaded () {
       setImmediate(() => {
         this.show = true
@@ -111,19 +115,26 @@ export default {
 <style scoped lang="scss">
 .thread {
   position: relative;
-  display: flex;
+  padding: 10px 20px;
   color: var(--text);
+  background-color: var(--bg);
 
-  &__overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+  //&__overlay {
+  //  position: absolute;
+  //  top: 0;
+  //  right: 0;
+  //  bottom: 0;
+  //  left: 0;
+  //  display: flex;
+  //  align-items: center;
+  //  justify-content: center;
+  //  background-color: var(--bg);
+  //}
+
+  &__header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg);
+    justify-content: space-between;
+    margin-bottom: 30px;
   }
 
   &__img {
@@ -136,15 +147,28 @@ export default {
     }
   }
 
+  &__blur {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    height: 20px;
+    background-image: linear-gradient(transparent, var(--bg));
+  }
+
   &__body {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-left: 1.5%;
+  }
+
+  &__open {
+    color: var(--accent);
+    cursor: pointer;
   }
 
   &__title {
-    margin-bottom: 30px;
     font-weight: normal;
     color: #f1f1f1;
 
@@ -157,9 +181,15 @@ export default {
   }
 
   &__desc {
-    word-break: break-all;
+    position: relative;
+    max-height: 100px;
+    overflow-y: hidden;
 
     @include button;
+
+    &--open {
+      max-height: unset;
+    }
   }
 
   &__link {
@@ -168,14 +198,14 @@ export default {
     @include button;
   }
 
-  &__footer {
+  &__stats {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: auto;
   }
 
   &__board {
+    margin-right: 20px;
     color: var(--accent);
     cursor: pointer;
 

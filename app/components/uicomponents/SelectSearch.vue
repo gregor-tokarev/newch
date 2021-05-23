@@ -5,6 +5,7 @@
         ref="input"
         v-model="filterString"
         class="select__selected-value"
+        @focus="open = true"
         @keydown.down.up.prevent
         @keyup.enter="setValue(filterList[focusedItemIndex] || filterString)"
       >

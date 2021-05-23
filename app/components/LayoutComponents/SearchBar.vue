@@ -26,19 +26,8 @@
 </template>
 
 <script>
-import algoliasearch from 'algoliasearch/lite'
 import SearchItem from '~/components/LayoutComponents/SearchItem'
-
-const algoliaClient = algoliasearch('R40L3PVYP5', '0798b7c27b0d2db05ff96e12a6724485').initIndex('threads')
-
-const searchClient = {
-  search (query) {
-    if (query === '') {
-      return
-    }
-    return algoliaClient.search(query)
-  }
-}
+import algolia from '~/assets/js/algolia'
 
 export default {
   name: 'SearchBar',
@@ -46,7 +35,7 @@ export default {
   data () {
     return {
       query: '',
-      searchClient,
+      searchClient: algolia,
       results: [],
       open: false,
       selectedIndex: -1
@@ -61,12 +50,6 @@ export default {
   },
   watch: {
     query: 'search'
-  },
-  mounted () {
-    window.addEventListener('keyup', this.focus)
-  },
-  beforeDestroy () {
-    window.removeEventListener('keyup', this.focus)
   },
   methods: {
     async search () {

@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import {Body, Block} from "../types/collections"
+import {Body, Block, IThread} from "../types/collections"
 import refFromUrl from "../assets/refFromUrl"
 import {firestore} from "firebase-admin/lib/firestore";
 import DocumentSnapshot = firestore.DocumentSnapshot;
@@ -8,7 +8,7 @@ import DocumentSnapshot = firestore.DocumentSnapshot;
 
 export const addComment = functions.firestore.document('threads/{threadId}/comments/{commentId}')
     .onCreate(async (snapshot, context) => {
-        return updateParentFn(snapshot, context, 'increment')
+        return Promise.all([updateParentFn(snapshot, context, 'increment'), updateThread(snapshot, context, 'increment')])
     })
 
 export const deleteComment = functions.firestore.document('threads/{threadId}/comments/{commentId}')
@@ -32,7 +32,7 @@ export const deleteComment = functions.firestore.document('threads/{threadId}/co
         deleteAllChild = comments.docs.map(doc => commentsRef.doc(doc.id).delete())
 
         // @ts-ignore
-        return Promise.all([...promises, ...deleteAllChild, updateParentFn(snapshot, context, 'decrement')])
+        return Promise.all([...promises, ...deleteAllChild, updateParentFn(snapshot, context, 'decrement'), updateThread(snapshot, context, 'decrement')])
     })
 
 
@@ -90,5 +90,14 @@ async function updateParentFn(snapshot: DocumentSnapshot, context: functions.Eve
             return updateParent
         }
     }
-    return Promise.resolve(undefined)
+}
+
+async function updateThread(snapshot: DocumentSnapshot, context: functions.EventContext, type: 'increment' | 'decrement') {
+    const threadRef = admin.firestore().collection('threads').doc(context.params.threadId)
+    const threadPromise = await threadRef.get()
+    const threadData = threadPromise.data()! as IThread
+    const commentsCount = type === 'increment' ? threadData.commentsCount + 1 : threadData.commentsCount - 1
+    return threadRef.update({
+        commentsCount,
+    })
 }

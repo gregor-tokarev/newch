@@ -115,6 +115,7 @@ export default {
 <style scoped lang="scss">
 .editor {
   width: 100%;
+  overflow-x: hidden;
 
   ::v-deep {
     * {
@@ -132,6 +133,10 @@ export default {
           background-color: var(--bg) !important;
         }
       }
+    }
+
+    .codex-editor {
+      width: 750px;
     }
 
     .ce-conversion-tool {

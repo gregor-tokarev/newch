@@ -47,6 +47,7 @@ export default {
           board: this.board,
           title: this.title,
           creator: this.$user.uid,
+          commentsCount: 0,
           created: Date.now()
         })
 

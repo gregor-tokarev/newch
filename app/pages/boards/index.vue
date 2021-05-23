@@ -18,7 +18,7 @@
         class="boards__board"
         @click="$router.push(localePath({name: 'index', query: {b:board.link}}))"
       >
-        <BoardCard :board="board" :color="index % 2 === 0 ? 'dark':'light'" />
+        <BoardCard :board="board" :color="index % 2 !== 0 ? 'dark':'light'" />
       </li>
     </ul>
   </div>

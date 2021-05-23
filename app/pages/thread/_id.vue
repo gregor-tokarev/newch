@@ -33,15 +33,12 @@
       class="thread__comment"
     />
     <DeleteThread v-if="open" @click:outside="open = false" @close="open = false" />
-    <slide-x-right-transition>
-      <nuxt-child />
-    </slide-x-right-transition>
+    <nuxt-child />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { SlideXRightTransition } from 'vue2-transitions'
 import Editor from '~/components/uicomponents/Editor'
 import Button from '~/components/uicomponents/Button'
 import DeleteThread from '~/components/Modals/DeleteThread'
@@ -53,7 +50,6 @@ export default {
     CommentCard,
     DeleteThread,
     Button,
-    SlideXRightTransition,
     Editor
   },
   async fetch ({
@@ -106,6 +102,8 @@ export default {
     position: relative;
     display: flex;
     justify-content: center;
+    max-width: 750px;
+    margin: 0 auto;
   }
 
   &__right-sidebar {
@@ -118,7 +116,7 @@ export default {
 
   &__reply {
     display: table;
-    margin: 0 0 120px;
+    margin: 0 auto 120px;
   }
 
   &__icon {

@@ -10,7 +10,8 @@ const mutations = {
 
 const actions = {
   async fetchAndSetBoards ({ commit }) {
-    let boards = await this.$fire.firestore.collection('boards').orderBy('threadsCount').get()
+    const collectionReference = this.$fire.firestore.collection('boards')
+    let boards = await collectionReference.orderBy('threadsCount', 'desc').get()
     boards = boards.docs.map(board => ({
       ...board.data(),
       id: board.id
@@ -18,7 +19,8 @@ const actions = {
     commit('SET_BOARDS', boards)
   },
   async fetchBoardsForIndex ({ commit }) {
-    let boards = await this.$fire.firestore.collection('boards').orderBy('threadsCount').limit(10).get()
+    const collectionReference = this.$fire.firestore.collection('boards')
+    let boards = await collectionReference.orderBy('threadsCount', 'desc').limit(10).get()
     boards = boards.docs.map(board => ({
       ...board.data(),
       id: board.id

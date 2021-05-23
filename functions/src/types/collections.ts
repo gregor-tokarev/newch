@@ -12,10 +12,11 @@ export interface Block {
     data?: object,
 }
 
-export interface Thread {
+export interface IThread {
     title: string,
     created: number,
     board: string,
     body?: Body
-    creator: id
+    creator: id,
+    commentsCount: number,
 }

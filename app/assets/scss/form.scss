@@ -1,16 +1,21 @@
 .form {
   &__title {
     display: block;
-    width: 100%;
-    margin-bottom: 45px;
+    width: 750px;
+    margin: 0 auto 45px;
     color: var(--text);
-    text-align: center;
+    //text-align: center;
 
     @include title;
 
     &:placeholder-shown {
       color: var(--label);
     }
+  }
+
+  &__body {
+    max-width: 750px;
+    margin: 0 auto;
   }
 
   &__captcha {
