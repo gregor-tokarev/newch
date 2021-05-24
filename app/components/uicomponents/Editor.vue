@@ -115,7 +115,6 @@ export default {
 <style scoped lang="scss">
 .editor {
   width: 100%;
-  overflow-x: hidden;
 
   ::v-deep {
     * {
