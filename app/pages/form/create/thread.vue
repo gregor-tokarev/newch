@@ -57,7 +57,7 @@ export default {
         }))
         await this.$recaptcha.reset()
       } catch (err) {
-        console.error(err)
+        // console.error(err)
       }
     }
   },

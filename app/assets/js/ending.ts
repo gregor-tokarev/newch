@@ -1,6 +1,5 @@
 export default function (length: number, locale: string = 'ru') {
   const lengthString = String(length)
-  console.log(length, locale)
   const lastNumber = parseInt(lengthString[lengthString.length - 1])
   if (locale === 'ru') {
     if (length === 1) {

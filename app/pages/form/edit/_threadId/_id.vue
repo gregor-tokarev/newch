@@ -57,7 +57,7 @@ export default {
         this.$router.back()
         await this.$recaptcha.reset()
       } catch (err) {
-        console.error(err)
+        // console.error(err)
       }
     }
   }

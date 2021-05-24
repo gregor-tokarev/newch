@@ -4,9 +4,9 @@
       <main class="page__main">
         <LoadThreads v-if="getNewThreads.length" class="page__load" />
         <ThreadCard
-          v-for="(thread, index) in getThreads"
+          v-for="(thread) in getThreads"
           :id="thread.id"
-          :key="index"
+          :key="thread.id"
           class="page__item"
           :created="thread.lastUpdate"
           :max-desc-length="50000"

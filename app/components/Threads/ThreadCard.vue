@@ -23,7 +23,7 @@
     </div>
     <div class="thread__body">
       <div class="thread__desc" :class="{'thread__desc--open': show}">
-        <Editor read :data="desc" :padding-bottom="0" />
+        <Editor :id="id" read :data="desc" :padding-bottom="0" />
         <div v-if="!show" class="thread__blur" />
       </div>
     </div>
