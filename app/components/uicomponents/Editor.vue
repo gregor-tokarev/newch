@@ -24,7 +24,8 @@ export default {
       default: false
     },
     data: {
-      type: Object
+      type: Object,
+      require: true
     },
     id: {
       type: String,
@@ -48,7 +49,8 @@ export default {
   },
   async mounted () {
     await this.editor.isReady
-    const paddinger = document.querySelector(`#${this.id} .codex-editor__redactor`)
+    const editor = document.getElementById(this.id)
+    const paddinger = editor.querySelector('.codex-editor__redactor')
     if (paddinger) {
       paddinger.style.paddingBottom = this.paddingBottom + 'px'
     }

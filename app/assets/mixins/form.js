@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 export default {
   data: () => ({
     title: null,
-    body: '',
+    body: {},
     board: null,
     token: null
   }),
