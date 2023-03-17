@@ -16,6 +16,9 @@
     "*.{ts,js,vue}": "eslint",
     "*.{css,vue}": "stylelint"
   },
+  "engines": {
+    "node": "^12"
+  },
   "dependencies": {
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/delimiter": "^1.2.0",
